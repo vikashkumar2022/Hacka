@@ -1,0 +1,59 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Backend API
+  - job_name: 'backend'
+    static_configs:
+      - targets: ['backend:5000']
+    metrics_path: '/api/metrics'
+    scrape_interval: 30s
+
+  # Frontend
+  - job_name: 'frontend'
+    static_configs:
+      - targets: ['frontend:3000']
+    metrics_path: '/health'
+    scrape_interval: 30s
+
+  # Nginx
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:80']
+    metrics_path: '/health'
+    scrape_interval: 30s
+
+  # PostgreSQL
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+    scrape_interval: 30s
+
+  # Redis
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    scrape_interval: 30s
+
+  # IPFS
+  - job_name: 'ipfs'
+    static_configs:
+      - targets: ['ipfs:5001']
+    metrics_path: '/api/v0/stats/repo'
+    scrape_interval: 60s
+
+  # Hardhat node
+  - job_name: 'hardhat'
+    static_configs:
+      - targets: ['hardhat:8545']
+    scrape_interval: 30s

@@ -1,0 +1,382 @@
+# Production deployment configuration for Blockchain File Security System
+version: '3.8'
+
+services:
+  # PostgreSQL Database with persistence
+  postgres:
+    image: postgres:15-alpine
+    container_name: blockchain_files_db_prod
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-blockchain_files}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database/backup:/backup
+    networks:
+      - blockchain_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: blockchain_files_redis_prod
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./infrastructure/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - blockchain_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--no-auth-warning", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  # IPFS Node with persistence
+  ipfs:
+    image: ipfs/go-ipfs:latest
+    container_name: blockchain_files_ipfs_prod
+    environment:
+      - IPFS_PROFILE=server
+    ports:
+      - "4001:4001"
+      - "5001:5001"
+      - "8080:8080"
+    volumes:
+      - ipfs_data:/data/ipfs
+      - ./infrastructure/ipfs/config:/data/ipfs/config
+    networks:
+      - blockchain_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5001/api/v0/id"]
+      interval: 60s
+      timeout: 30s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+
+  # Backend API with production settings
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: blockchain_files_backend_prod
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-blockchain_files}
+      - WEB3_PROVIDER_URI=${WEB3_PROVIDER_URI:-https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}}
+      - IPFS_API_HOST=ipfs
+      - IPFS_API_PORT=5001
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - CONTRACT_ADDRESS=${CONTRACT_ADDRESS}
+      - MAX_FILE_SIZE=${MAX_FILE_SIZE:-104857600}
+      - ALLOWED_EXTENSIONS=${ALLOWED_EXTENSIONS:-pdf,doc,docx,txt,jpg,png,gif,mp4,avi}
+    volumes:
+      - backend_uploads:/app/uploads
+      - backend_logs:/app/logs
+    networks:
+      - blockchain_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ipfs:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+
+  # Frontend Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-https://api.your-domain.com/api}
+        REACT_APP_CONTRACT_ADDRESS: ${CONTRACT_ADDRESS}
+        REACT_APP_WEB3_PROVIDER_URI: ${WEB3_PROVIDER_URI}
+    container_name: blockchain_files_frontend_prod
+    networks:
+      - blockchain_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  # Nginx Load Balancer and SSL Termination
+  nginx:
+    image: nginx:alpine
+    container_name: blockchain_files_nginx_prod
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infrastructure/nginx/nginx.prod.conf:/etc/nginx/nginx.conf
+      - ./infrastructure/nginx/ssl:/etc/nginx/ssl
+      - ./infrastructure/nginx/logs:/var/log/nginx
+      - nginx_cache:/var/cache/nginx
+    networks:
+      - blockchain_network
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  # Monitoring with Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: blockchain_files_prometheus_prod
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/monitoring/prometheus.prod.yml:/etc/prometheus/prometheus.yml
+      - ./infrastructure/monitoring/rules:/etc/prometheus/rules
+      - prometheus_data:/prometheus
+    networks:
+      - blockchain_network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=90d'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+
+  # Grafana for Visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: blockchain_files_grafana_prod
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+      - GF_SERVER_ROOT_URL=https://monitoring.your-domain.com
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=${SMTP_HOST}
+      - GF_SMTP_USER=${SMTP_USER}
+      - GF_SMTP_PASSWORD=${SMTP_PASSWORD}
+      - GF_SMTP_FROM_ADDRESS=${SMTP_FROM_ADDRESS}
+    volumes:
+      - ./infrastructure/monitoring/grafana:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+      - grafana_logs:/var/log/grafana
+    networks:
+      - blockchain_network
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  # Log aggregation with Loki
+  loki:
+    image: grafana/loki:latest
+    container_name: blockchain_files_loki_prod
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./infrastructure/monitoring/loki.yml:/etc/loki/local-config.yaml
+      - loki_data:/loki
+    networks:
+      - blockchain_network
+    command: -config.file=/etc/loki/local-config.yaml
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  # Log shipping with Promtail
+  promtail:
+    image: grafana/promtail:latest
+    container_name: blockchain_files_promtail_prod
+    volumes:
+      - ./infrastructure/monitoring/promtail.yml:/etc/promtail/config.yml
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - backend_logs:/app/logs:ro
+      - nginx_logs:/var/log/nginx:ro
+    networks:
+      - blockchain_network
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # Backup service
+  backup:
+    image: postgres:15-alpine
+    container_name: blockchain_files_backup_prod
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-blockchain_files}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./database/backup:/backup
+      - ./scripts/backup.sh:/backup.sh
+    networks:
+      - blockchain_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+    command: |
+      sh -c "
+        echo '0 2 * * * /backup.sh' | crontab -
+        crond -f
+      "
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+networks:
+  blockchain_network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: blockchain_prod
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
+
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/blockchain-files/postgres
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/blockchain-files/redis
+  ipfs_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/blockchain-files/ipfs
+  backend_uploads:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/blockchain-files/uploads
+  backend_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/log/blockchain-files/backend
+  nginx_cache:
+    driver: local
+  nginx_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/log/blockchain-files/nginx
+  prometheus_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/blockchain-files/prometheus
+  grafana_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/blockchain-files/grafana
+  grafana_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/log/blockchain-files/grafana
+  loki_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/blockchain-files/loki

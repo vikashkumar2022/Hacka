@@ -1,0 +1,1283 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{fontawesome5}
+
+% Color definitions
+\definecolor{primaryblue}{RGB}{25,118,210}
+\definecolor{secondarygreen}{RGB}{76,175,80}
+\definecolor{errorred}{RGB}{244,67,54}
+\definecolor{warningorange}{RGB}{255,152,0}
+\definecolor{codebackground}{RGB}{248,249,250}
+
+% Code highlighting setup
+\lstdefinestyle{javascript}{
+    language=JavaScript,
+    backgroundcolor=\color{codebackground},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{orange},
+    basicstyle=\footnotesize\ttfamily,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{lightgray}
+}
+
+\lstdefinestyle{python}{
+    language=Python,
+    backgroundcolor=\color{codebackground},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{orange},
+    basicstyle=\footnotesize\ttfamily,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    frame=single,
+    rulecolor=\color{lightgray}
+}
+
+\lstdefinestyle{solidity}{
+    language=C,
+    backgroundcolor=\color{codebackground},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{orange},
+    basicstyle=\footnotesize\ttfamily,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    frame=single,
+    rulecolor=\color{lightgray}
+}
+
+% Custom boxes
+\newtcolorbox{infobox}{
+    colback=blue!5!white,
+    colframe=primaryblue,
+    title=Information,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{warningbox}{
+    colback=orange!5!white,
+    colframe=warningorange,
+    title=Warning,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{successbox}{
+    colback=green!5!white,
+    colframe=secondarygreen,
+    title=Success,
+    fonttitle=\bfseries
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Blockchain File Security System}
+\rhead{v1.0.0}
+\cfoot{\thepage}
+
+% Title page configuration
+\title{
+    \vspace{-2cm}
+    \begin{center}
+        \includegraphics[width=0.3\textwidth]{blockchain-logo.png}\\[1em]
+        {\Huge\textbf{\textcolor{primaryblue}{Blockchain File Security System}}}\\[0.5em]
+        {\Large\textcolor{gray}{Complete Technical Documentation}}\\[1em]
+        {\large Version 1.0.0}
+    \end{center}
+}
+
+\author{
+    \textbf{Development Team}\\
+    \textit{Hackathon Project Documentation}\\[1em]
+    \texttt{Email: support@blockchain-file-security.com}\\
+    \texttt{GitHub: https://github.com/your-repo/blockchain-file-security}
+}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+% Abstract
+\begin{abstract}
+The Blockchain File Security System is a comprehensive, production-ready application that leverages blockchain technology, distributed storage, and modern web development practices to provide secure file upload, storage, and verification capabilities. This system ensures data integrity, authenticity, and non-repudiation through cryptographic hashing, smart contracts, and immutable blockchain records. Built with React.js frontend, Flask backend, Ethereum smart contracts, and IPFS storage, the system provides enterprise-grade security features with a user-friendly interface.
+\end{abstract}
+
+\newpage
+\tableofcontents
+\newpage
+
+% Main document content
+\section{Introduction}
+
+\subsection{Project Overview}
+The Blockchain File Security System is a cutting-edge solution designed to address the critical challenges of file integrity, authenticity, and security in digital environments. By combining blockchain technology with modern web development practices, this system provides an immutable and verifiable record of file uploads, ensuring that data cannot be tampered with or falsified without detection.
+
+\begin{infobox}
+\textbf{Key Innovation:} This system combines the immutability of blockchain technology with the accessibility of modern web applications, creating a user-friendly platform for secure file management that doesn't require technical blockchain expertise from end users.
+\end{infobox}
+
+\subsection{Problem Statement}
+In today's digital landscape, organizations face several critical challenges:
+
+\begin{itemize}
+    \item \textbf{Data Integrity}: Ensuring files haven't been modified or corrupted
+    \item \textbf{Authenticity}: Proving the origin and ownership of digital documents
+    \item \textbf{Non-repudiation}: Preventing denial of file submission or modification
+    \item \textbf{Audit Trail}: Maintaining comprehensive logs of all file operations
+    \item \textbf{Scalability}: Handling large volumes of files efficiently
+    \item \textbf{Compliance}: Meeting regulatory requirements for data handling
+\end{itemize}
+
+\subsection{Solution Approach}
+Our solution leverages a multi-layered architecture that combines:
+
+\begin{enumerate}
+    \item \textbf{Cryptographic Hashing (SHA-256)}: Ensures file integrity
+    \item \textbf{Blockchain Smart Contracts}: Provides immutable record keeping
+    \item \textbf{IPFS Distributed Storage}: Offers decentralized file storage
+    \item \textbf{JWT Authentication}: Secures user access and operations
+    \item \textbf{Real-time Monitoring}: Enables system oversight and analytics
+\end{enumerate}
+
+\section{System Architecture}
+
+\subsection{High-Level Architecture}
+The system follows a microservices architecture with clear separation of concerns:
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance=2cm]
+    % Frontend
+    \node[draw, rectangle, fill=blue!20, minimum width=3cm, minimum height=1cm] (frontend) {React Frontend};
+    
+    % Backend
+    \node[draw, rectangle, fill=green!20, minimum width=3cm, minimum height=1cm, below=of frontend] (backend) {Flask Backend};
+    
+    % Database
+    \node[draw, rectangle, fill=yellow!20, minimum width=2cm, minimum height=1cm, below left=of backend] (database) {SQLite Database};
+    
+    % Blockchain
+    \node[draw, rectangle, fill=purple!20, minimum width=2cm, minimum height=1cm, below right=of backend] (blockchain) {Ethereum Blockchain};
+    
+    % IPFS
+    \node[draw, rectangle, fill=orange!20, minimum width=2cm, minimum height=1cm, below=of backend] (ipfs) {IPFS Storage};
+    
+    % Connections
+    \draw[->, thick] (frontend) -- (backend) node[midway, right] {API Calls};
+    \draw[->, thick] (backend) -- (database) node[midway, above] {Metadata};
+    \draw[->, thick] (backend) -- (blockchain) node[midway, above] {Smart Contracts};
+    \draw[->, thick] (backend) -- (ipfs) node[midway, right] {File Storage};
+\end{tikzpicture}
+\caption{System Architecture Overview}
+\end{figure}
+
+\subsection{Component Description}
+
+\subsubsection{Frontend Layer (React.js)}
+\begin{itemize}
+    \item \textbf{Framework}: React 18 with Material-UI v5
+    \item \textbf{Routing}: React Router v6 for single-page application navigation
+    \item \textbf{State Management}: Context API with custom providers
+    \item \textbf{Blockchain Integration}: Web3.js and Ethers.js libraries
+    \item \textbf{Authentication}: JWT token-based authentication
+\end{itemize}
+
+\subsubsection{Backend Layer (Flask)}
+\begin{itemize}
+    \item \textbf{Framework}: Flask with RESTful API design
+    \item \textbf{Database ORM}: SQLAlchemy for database operations
+    \item \textbf{Authentication}: JWT tokens with bcrypt password hashing
+    \item \textbf{File Processing}: SHA-256 hashing and metadata extraction
+    \item \textbf{API Documentation}: Comprehensive endpoint documentation
+\end{itemize}
+
+\subsubsection{Blockchain Layer (Ethereum)}
+\begin{itemize}
+    \item \textbf{Smart Contracts}: Solidity-based file registry contracts
+    \item \textbf{Development Environment}: Hardhat for testing and deployment
+    \item \textbf{Security Libraries}: OpenZeppelin for secure contract development
+    \item \textbf{Network Support}: Ethereum mainnet and testnets
+\end{itemize}
+
+\subsubsection{Storage Layer}
+\begin{itemize}
+    \item \textbf{File Storage}: IPFS for distributed content storage
+    \item \textbf{Metadata Storage}: SQLite database for development
+    \item \textbf{Session Storage}: Browser localStorage for user preferences
+    \item \textbf{Caching}: Browser and server-side caching strategies
+\end{itemize}
+
+\section{Core Features}
+
+\subsection{File Upload System}
+
+\subsubsection{Upload Process Flow}
+The file upload process follows a secure multi-step workflow:
+
+\begin{enumerate}
+    \item \textbf{File Selection}: Users select files via drag-and-drop or file picker
+    \item \textbf{Hash Generation}: SHA-256 hash calculated client-side
+    \item \textbf{IPFS Upload}: File content uploaded to IPFS network
+    \item \textbf{Blockchain Recording}: File metadata recorded on blockchain
+    \item \textbf{Database Storage}: Metadata stored in local database
+    \item \textbf{Confirmation}: User receives upload confirmation and transaction hash
+\end{enumerate}
+
+\begin{lstlisting}[style=javascript, caption=File Upload Implementation]
+const uploadToBlockchain = async () => {
+  console.log('Starting blockchain upload process');
+  
+  if (!isConnected || !isAuthenticated) {
+    throw new Error('Please connect wallet and login');
+  }
+
+  setUploading(true);
+  setActiveStep(2);
+
+  for (let file of uploadedFiles) {
+    if (file.status !== 'hashed') continue;
+
+    try {
+      // Upload to IPFS
+      const ipfsHash = await uploadToIPFS(file);
+      updateFile(file.id, { ipfsHash });
+
+      // Record on blockchain
+      const result = await uploadFileToBlockchain(
+        '0x' + file.hash,
+        file.name,
+        file.size,
+        ipfsHash
+      );
+
+      // Save metadata to backend
+      await saveMetadataToBackend(file, result);
+      
+      updateFile(file.id, { 
+        status: 'completed', 
+        blockchainTx: result 
+      });
+    } catch (error) {
+      console.error('Upload error:', error);
+      updateFile(file.id, { 
+        status: 'error', 
+        error: error.message 
+      });
+    }
+  }
+
+  setActiveStep(3);
+  setUploading(false);
+};
+\end{lstlisting}
+
+\subsubsection{Security Features}
+\begin{itemize}
+    \item \textbf{File Validation}: Type and size validation before upload
+    \item \textbf{Hash Verification}: SHA-256 hash calculated and verified
+    \item \textbf{Authentication Check}: JWT token validation required
+    \item \textbf{Rate Limiting}: Prevents abuse and spam uploads
+    \item \textbf{Encryption}: File content encrypted during transmission
+\end{itemize}
+
+\subsection{File Verification System}
+
+\subsubsection{Verification Methods}
+The system provides multiple verification approaches:
+
+\begin{enumerate}
+    \item \textbf{Hash-based Verification}: Direct hash comparison against blockchain
+    \item \textbf{File-based Verification}: Upload file to calculate and verify hash
+    \item \textbf{Batch Verification}: Verify multiple files simultaneously
+    \item \textbf{Historical Verification}: Check file status at specific timestamps
+\end{enumerate}
+
+\begin{lstlisting}[style=javascript, caption=File Verification Implementation]
+const verifyFile = async () => {
+  try {
+    setIsVerifying(true);
+    setVerificationResult(null);
+    
+    const hashToVerify = verificationMethod === 'hash' 
+      ? hashInput 
+      : fileHash;
+    
+    if (!hashToVerify) {
+      throw new Error('Please provide a file hash or upload a file');
+    }
+
+    const cleanHash = hashToVerify.startsWith('0x') 
+      ? hashToVerify.slice(2) 
+      : hashToVerify;
+    const hashWithPrefix = '0x' + cleanHash;
+
+    const result = await verifyFileOnBlockchain(hashWithPrefix);
+    
+    const verificationData = {
+      fileHash: result.fileHash,
+      fileName: result.fileName,
+      fileSize: Number(result.fileSize),
+      ipfsHash: result.ipfsHash,
+      uploader: result.uploader,
+      timestamp: Number(result.timestamp),
+      exists: result.exists,
+      inputHash: hashToVerify,
+      isValid: result.exists && 
+        result.fileHash.toLowerCase() === 
+        hashWithPrefix.toLowerCase()
+    };
+
+    setVerificationResult(verificationData);
+  } catch (error) {
+    console.error('Verification error:', error);
+    setVerificationResult({
+      isValid: false,
+      error: error.message || 'Verification failed',
+      inputHash: verificationMethod === 'hash' ? hashInput : fileHash
+    });
+  } finally {
+    setIsVerifying(false);
+  }
+};
+\end{lstlisting}
+
+\subsection{Authentication System}
+
+\subsubsection{User Management}
+The authentication system provides comprehensive user management:
+
+\begin{itemize}
+    \item \textbf{Registration}: Secure user account creation with email verification
+    \item \textbf{Login}: JWT token-based authentication with session management
+    \item \textbf{Profile Management}: User profile updates and settings
+    \item \textbf{Password Security}: bcrypt hashing with salt
+    \item \textbf{Session Handling}: Automatic token refresh and logout
+\end{itemize}
+
+\begin{lstlisting}[style=python, caption=Backend Authentication Implementation]
+@app.route('/api/auth/login', methods=['POST'])
+def login():
+    """User login endpoint"""
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+        
+        if not all([email, password]):
+            return jsonify({'error': 'Missing email or password'}), 400
+        
+        # Check user credentials
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute(
+            'SELECT id, username, email, password_hash FROM users WHERE email = ?', 
+            (email,)
+        )
+        user = cursor.fetchone()
+        conn.close()
+        
+        if not user or not check_password_hash(user[3], password):
+            return jsonify({'error': 'Invalid credentials'}), 401
+        
+        # Generate JWT token
+        token = generate_jwt_token(user[0])
+        
+        return jsonify({
+            'message': 'Login successful',
+            'access_token': token,
+            'user': {
+                'id': user[0],
+                'username': user[1],
+                'email': user[2]
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+\end{lstlisting}
+
+\subsection{Analytics and Monitoring}
+
+\subsubsection{Real-time Analytics}
+The system provides comprehensive analytics capabilities:
+
+\begin{itemize}
+    \item \textbf{Upload Statistics}: File upload trends and metrics
+    \item \textbf{User Activity}: User engagement and behavior analysis
+    \item \textbf{System Performance}: Response times and throughput metrics
+    \item \textbf{Security Monitoring}: Failed authentication attempts and suspicious activity
+    \item \textbf{Blockchain Metrics}: Transaction costs and confirmation times
+\end{itemize}
+
+\subsubsection{Dashboard Features}
+\begin{itemize}
+    \item \textbf{Overview Cards}: Key metrics at a glance
+    \item \textbf{Interactive Charts}: Time-series data visualization
+    \item \textbf{Real-time Updates}: Live data refreshing
+    \item \textbf{Export Capabilities}: Data export in multiple formats
+    \item \textbf{Custom Filters}: Date ranges and category filtering
+\end{itemize}
+
+\section{Technology Stack}
+
+\subsection{Frontend Technologies}
+
+\begin{longtable}{|p{3cm}|p{2cm}|p{8cm}|}
+\hline
+\textbf{Technology} & \textbf{Version} & \textbf{Purpose} \\
+\hline
+React & 18.2.0 & Core UI framework with hooks and context \\
+\hline
+Material-UI & 5.14.20 & Professional component library with theming \\
+\hline
+React Router & 6.20.1 & Client-side routing and navigation \\
+\hline
+Ethers.js & 6.8.1 & Ethereum blockchain interaction \\
+\hline
+Axios & 1.6.2 & HTTP client for API communication \\
+\hline
+React Dropzone & 14.2.3 & File upload interface with drag-and-drop \\
+\hline
+Crypto-JS & 4.2.0 & Client-side cryptographic operations \\
+\hline
+Recharts & 2.8.0 & Data visualization and charting \\
+\hline
+Date-fns & 2.30.0 & Date manipulation and formatting \\
+\hline
+\end{longtable}
+
+\subsection{Backend Technologies}
+
+\begin{longtable}{|p{3cm}|p{2cm}|p{8cm}|}
+\hline
+\textbf{Technology} & \textbf{Version} & \textbf{Purpose} \\
+\hline
+Flask & 2.3.3 & Lightweight Python web framework \\
+\hline
+SQLAlchemy & 2.0.21 & ORM for database operations \\
+\hline
+Flask-JWT-Extended & 4.5.3 & JWT authentication implementation \\
+\hline
+Flask-CORS & 4.0.0 & Cross-origin resource sharing \\
+\hline
+Web3.py & 6.11.1 & Python Ethereum library \\
+\hline
+IPFS HTTP Client & 0.8.0 & Distributed storage integration \\
+\hline
+Werkzeug & 2.3.7 & WSGI utility library \\
+\hline
+Gunicorn & 21.2.0 & Python WSGI HTTP server \\
+\hline
+\end{longtable}
+
+\subsection{Blockchain Technologies}
+
+\begin{longtable}{|p{3cm}|p{2cm}|p{8cm}|}
+\hline
+\textbf{Technology} & \textbf{Version} & \textbf{Purpose} \\
+\hline
+Solidity & 0.8.19 & Smart contract programming language \\
+\hline
+Hardhat & 2.17.2 & Ethereum development environment \\
+\hline
+OpenZeppelin & 4.9.3 & Security-focused contract libraries \\
+\hline
+Ethers.js & 6.8.1 & Ethereum library for frontend \\
+\hline
+MetaMask & Latest & Browser wallet integration \\
+\hline
+\end{longtable}
+
+\section{Smart Contract Architecture}
+
+\subsection{FileRegistry Contract}
+
+The core smart contract manages file registration and verification:
+
+\begin{lstlisting}[style=solidity, caption=FileRegistry Smart Contract]
+pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
+contract FileRegistry is Ownable, ReentrancyGuard {
+    struct FileRecord {
+        string fileHash;
+        string fileName;
+        uint256 fileSize;
+        string ipfsHash;
+        address uploader;
+        uint256 timestamp;
+        bool exists;
+    }
+    
+    mapping(string => FileRecord) private files;
+    mapping(address => string[]) private userFiles;
+    
+    event FileUploaded(
+        string indexed fileHash,
+        address indexed uploader,
+        string fileName,
+        uint256 timestamp
+    );
+    
+    event FileVerified(
+        string indexed fileHash,
+        address indexed verifier,
+        bool isValid,
+        uint256 timestamp
+    );
+    
+    function uploadFile(
+        string memory _fileHash,
+        string memory _fileName,
+        uint256 _fileSize,
+        string memory _ipfsHash
+    ) public nonReentrant {
+        require(bytes(_fileHash).length > 0, "File hash cannot be empty");
+        require(bytes(_fileName).length > 0, "File name cannot be empty");
+        require(_fileSize > 0, "File size must be greater than 0");
+        require(!files[_fileHash].exists, "File already exists");
+        
+        files[_fileHash] = FileRecord({
+            fileHash: _fileHash,
+            fileName: _fileName,
+            fileSize: _fileSize,
+            ipfsHash: _ipfsHash,
+            uploader: msg.sender,
+            timestamp: block.timestamp,
+            exists: true
+        });
+        
+        userFiles[msg.sender].push(_fileHash);
+        
+        emit FileUploaded(_fileHash, msg.sender, _fileName, block.timestamp);
+    }
+    
+    function verifyFile(string memory _fileHash) 
+        public 
+        view 
+        returns (FileRecord memory) 
+    {
+        return files[_fileHash];
+    }
+    
+    function getUserFiles(address _user) 
+        public 
+        view 
+        returns (string[] memory) 
+    {
+        return userFiles[_user];
+    }
+    
+    function getTotalFiles() public view returns (uint256) {
+        return userFiles[msg.sender].length;
+    }
+}
+\end{lstlisting}
+
+\subsection{Security Features}
+
+\begin{itemize}
+    \item \textbf{Access Control}: OpenZeppelin Ownable for administrative functions
+    \item \textbf{Reentrancy Protection}: ReentrancyGuard prevents attack vectors
+    \item \textbf{Input Validation}: Comprehensive parameter validation
+    \item \textbf{Event Logging}: Detailed event emission for audit trails
+    \item \textbf{Gas Optimization}: Efficient storage and computation patterns
+\end{itemize}
+
+\section{API Documentation}
+
+\subsection{Authentication Endpoints}
+
+\subsubsection{POST /api/auth/register}
+User registration endpoint for creating new accounts.
+
+\textbf{Request Body:}
+\begin{lstlisting}[style=javascript]
+{
+  "username": "string",
+  "email": "string",
+  "password": "string"
+}
+\end{lstlisting}
+
+\textbf{Response:}
+\begin{lstlisting}[style=javascript]
+{
+  "message": "User registered successfully",
+  "access_token": "jwt_token_string",
+  "user": {
+    "id": 1,
+    "username": "testuser",
+    "email": "test@example.com"
+  }
+}
+\end{lstlisting}
+
+\subsubsection{POST /api/auth/login}
+User authentication endpoint for obtaining access tokens.
+
+\textbf{Request Body:}
+\begin{lstlisting}[style=javascript]
+{
+  "email": "string",
+  "password": "string"
+}
+\end{lstlisting}
+
+\textbf{Response:}
+\begin{lstlisting}[style=javascript]
+{
+  "message": "Login successful",
+  "access_token": "jwt_token_string",
+  "user": {
+    "id": 1,
+    "username": "testuser",
+    "email": "test@example.com"
+  }
+}
+\end{lstlisting}
+
+\subsection{File Management Endpoints}
+
+\subsubsection{POST /api/files/upload}
+File upload endpoint supporting both file uploads and metadata storage.
+
+\textbf{Request Headers:}
+\begin{lstlisting}
+Authorization: Bearer jwt_token_string
+Content-Type: application/json | multipart/form-data
+\end{lstlisting}
+
+\textbf{Request Body (Metadata):}
+\begin{lstlisting}[style=javascript]
+{
+  "fileName": "string",
+  "fileHash": "string",
+  "fileSize": "number",
+  "ipfsHash": "string",
+  "transactionHash": "string",
+  "blockNumber": "number",
+  "walletAddress": "string"
+}
+\end{lstlisting}
+
+\subsubsection{POST /api/files/verify}
+File verification endpoint for checking blockchain records.
+
+\textbf{Request Body:}
+\begin{lstlisting}[style=javascript]
+{
+  "file_hash": "string"
+}
+\end{lstlisting}
+
+\textbf{Response:}
+\begin{lstlisting}[style=javascript]
+{
+  "verification_result": "valid|invalid",
+  "message": "string",
+  "file_info": {
+    "filename": "string",
+    "file_hash": "string",
+    "ipfs_hash": "string",
+    "blockchain_tx": "string",
+    "upload_date": "string"
+  }
+}
+\end{lstlisting}
+
+\subsection{Analytics Endpoints}
+
+\subsubsection{GET /api/analytics/overview}
+System overview statistics and metrics.
+
+\textbf{Response:}
+\begin{lstlisting}[style=javascript]
+{
+  "overview": {
+    "total_files": 150,
+    "total_users": 25,
+    "total_size": 1073741824,
+    "recent_uploads": 12,
+    "verified_files": 150,
+    "blockchain_transactions": 150
+  }
+}
+\end{lstlisting}
+
+\subsubsection{GET /api/analytics/trends}
+Time-series data for trending analysis.
+
+\textbf{Query Parameters:}
+\begin{itemize}
+    \item \texttt{range}: Time range (7d, 30d, 90d)
+\end{itemize}
+
+\textbf{Response:}
+\begin{lstlisting}[style=javascript]
+{
+  "trends": [
+    {
+      "date": "2024-01-01",
+      "uploads": 15,
+      "verifications": 12,
+      "downloads": 30
+    }
+  ]
+}
+\end{lstlisting}
+
+\section{Security Considerations}
+
+\subsection{Data Security}
+
+\subsubsection{File Integrity}
+\begin{itemize}
+    \item \textbf{SHA-256 Hashing}: Cryptographic hash functions ensure file integrity
+    \item \textbf{Blockchain Immutability}: Tamper-proof record storage
+    \item \textbf{Content Addressing}: IPFS ensures content authenticity
+    \item \textbf{Digital Signatures}: Cryptographic proof of authorship
+\end{itemize}
+
+\subsubsection{Access Control}
+\begin{itemize}
+    \item \textbf{JWT Authentication}: Secure token-based authentication
+    \item \textbf{Role-based Permissions}: Granular access control
+    \item \textbf{Session Management}: Secure session handling and timeout
+    \item \textbf{API Rate Limiting}: Protection against abuse and attacks
+\end{itemize}
+
+\subsection{Infrastructure Security}
+
+\subsubsection{Network Security}
+\begin{itemize}
+    \item \textbf{HTTPS/TLS}: Encrypted communication channels
+    \item \textbf{CORS Configuration}: Controlled cross-origin requests
+    \item \textbf{Input Validation}: Comprehensive parameter sanitization
+    \item \textbf{SQL Injection Prevention}: Parameterized queries and ORM
+\end{itemize}
+
+\subsubsection{Smart Contract Security}
+\begin{itemize}
+    \item \textbf{OpenZeppelin Libraries}: Battle-tested security patterns
+    \item \textbf{Access Control Modifiers}: Function-level security
+    \item \textbf{Reentrancy Guards}: Protection against reentrancy attacks
+    \item \textbf{Gas Optimization}: Prevention of DoS attacks
+\end{itemize}
+
+\section{Deployment and Operations}
+
+\subsection{Development Environment}
+
+\subsubsection{Local Setup}
+\begin{enumerate}
+    \item Clone the repository
+    \item Install dependencies for frontend and backend
+    \item Configure environment variables
+    \item Start development servers
+    \item Connect to local blockchain network
+\end{enumerate}
+
+\begin{lstlisting}[language=bash, caption=Development Setup Commands]
+# Clone repository
+git clone https://github.com/your-repo/blockchain-file-security
+cd blockchain-file-security
+
+# Frontend setup
+cd frontend
+npm install
+npm start
+
+# Backend setup (new terminal)
+cd backend
+pip install -r requirements.txt
+python app_dev.py
+
+# Blockchain setup (new terminal)
+cd blockchain
+npm install
+npx hardhat node
+npx hardhat run scripts/deploy.js --network localhost
+\end{lstlisting}
+
+\subsection{Production Deployment}
+
+\subsubsection{Docker Containerization}
+The system supports containerized deployment with Docker Compose:
+
+\begin{lstlisting}[language=yaml, caption=Docker Compose Configuration]
+version: '3.8'
+services:
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+      - REACT_APP_CONTRACT_ADDRESS=${CONTRACT_ADDRESS}
+    depends_on:
+      - backend
+      
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - IPFS_URL=${IPFS_URL}
+    depends_on:
+      - database
+      
+  database:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=blockchain_files
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      
+volumes:
+  postgres_data:
+\end{lstlisting}
+
+\subsection{Monitoring and Maintenance}
+
+\subsubsection{Health Checks}
+\begin{itemize}
+    \item \textbf{API Health}: Automated endpoint health monitoring
+    \item \textbf{Database Connectivity}: Connection pool and query performance
+    \item \textbf{Blockchain Connectivity}: Network status and gas prices
+    \item \textbf{IPFS Availability}: Storage network accessibility
+\end{itemize}
+
+\subsubsection{Logging and Monitoring}
+\begin{itemize}
+    \item \textbf{Application Logs}: Structured logging with different levels
+    \item \textbf{Error Tracking}: Comprehensive error collection and alerting
+    \item \textbf{Performance Metrics}: Response times and throughput monitoring
+    \item \textbf{Security Events}: Authentication failures and suspicious activity
+\end{itemize}
+
+\section{User Guide}
+
+\subsection{Getting Started}
+
+\subsubsection{Account Creation}
+\begin{enumerate}
+    \item Navigate to the application URL
+    \item Click "Sign Up" to create a new account
+    \item Fill in required information (username, email, password)
+    \item Verify email address if email verification is enabled
+    \item Log in with your credentials
+\end{enumerate}
+
+\subsubsection{Wallet Connection}
+\begin{enumerate}
+    \item Install MetaMask browser extension
+    \item Create or import an existing wallet
+    \item Connect to the appropriate network (mainnet/testnet)
+    \item Click "Connect Wallet" in the application
+    \item Approve the connection request in MetaMask
+\end{enumerate}
+
+\subsection{File Operations}
+
+\subsubsection{Uploading Files}
+\begin{enumerate}
+    \item Navigate to the Upload page
+    \item Drag and drop files or click to select
+    \item Review file information and metadata
+    \item Click "Generate Hashes" to compute SHA-256 hashes
+    \item Click "Upload to Blockchain" to start the upload process
+    \item Wait for IPFS upload and blockchain confirmation
+    \item Review upload results and transaction details
+\end{enumerate}
+
+\begin{warningbox}
+\textbf{Important:} Ensure your wallet has sufficient funds for blockchain transaction fees before uploading files.
+\end{warningbox}
+
+\subsubsection{Verifying Files}
+\begin{enumerate}
+    \item Navigate to the Verify page
+    \item Choose verification method:
+    \begin{itemize}
+        \item Hash-based: Enter the SHA-256 hash directly
+        \item File-based: Upload the file to calculate hash
+    \end{itemize}
+    \item Click "Verify File" to check against blockchain
+    \item Review verification results and file details
+\end{enumerate}
+
+\subsection{Dashboard and Analytics}
+
+\subsubsection{Dashboard Overview}
+The dashboard provides a comprehensive overview of system activity:
+
+\begin{itemize}
+    \item \textbf{Statistics Cards}: Total files, users, and storage usage
+    \item \textbf{Recent Activity}: Latest file uploads and verifications
+    \item \textbf{System Status}: Blockchain and IPFS connectivity
+    \item \textbf{Quick Actions}: Direct links to upload and verify
+\end{itemize}
+
+\subsubsection{Analytics Features}
+\begin{itemize}
+    \item \textbf{Upload Trends}: Time-series analysis of file uploads
+    \item \textbf{User Activity}: Engagement metrics and usage patterns
+    \item \textbf{File Statistics}: Size distribution and type analysis
+    \item \textbf{Blockchain Metrics}: Transaction costs and confirmation times
+\end{itemize}
+
+\section{Troubleshooting}
+
+\subsection{Common Issues}
+
+\subsubsection{Wallet Connection Issues}
+\begin{itemize}
+    \item \textbf{MetaMask Not Detected}: Ensure MetaMask extension is installed and enabled
+    \item \textbf{Wrong Network}: Switch to the correct Ethereum network
+    \item \textbf{Insufficient Funds}: Ensure wallet has ETH for transaction fees
+    \item \textbf{Transaction Rejected}: Check gas prices and wallet settings
+\end{itemize}
+
+\subsubsection{Upload Failures}
+\begin{itemize}
+    \item \textbf{Large File Size}: Check file size limits (default 100MB)
+    \item \textbf{Network Issues}: Verify internet connectivity and IPFS access
+    \item \textbf{Authentication Errors}: Refresh JWT token or re-login
+    \item \textbf{Blockchain Errors}: Check network status and gas prices
+\end{itemize}
+
+\subsubsection{Verification Issues}
+\begin{itemize}
+    \item \textbf{File Not Found}: Ensure file was successfully uploaded to blockchain
+    \item \textbf{Hash Mismatch}: Verify the correct file hash is being used
+    \item \textbf{Network Delays}: Allow time for blockchain synchronization
+    \item \textbf{Invalid Hash Format}: Ensure proper SHA-256 hash format
+\end{itemize}
+
+\subsection{Error Codes}
+
+\begin{longtable}{|p{2cm}|p{3cm}|p{8cm}|}
+\hline
+\textbf{Code} & \textbf{Category} & \textbf{Description} \\
+\hline
+AUTH001 & Authentication & Invalid or expired JWT token \\
+\hline
+AUTH002 & Authentication & Missing authorization header \\
+\hline
+AUTH003 & Authentication & Invalid login credentials \\
+\hline
+FILE001 & File Operations & File size exceeds maximum limit \\
+\hline
+FILE002 & File Operations & Invalid file type or format \\
+\hline
+FILE003 & File Operations & File hash calculation failed \\
+\hline
+BLOCK001 & Blockchain & Wallet not connected \\
+\hline
+BLOCK002 & Blockchain & Insufficient gas for transaction \\
+\hline
+BLOCK003 & Blockchain & Smart contract interaction failed \\
+\hline
+IPFS001 & Storage & IPFS upload timeout \\
+\hline
+IPFS002 & Storage & IPFS network unavailable \\
+\hline
+API001 & General & Rate limit exceeded \\
+\hline
+API002 & General & Server internal error \\
+\hline
+\end{longtable}
+
+\section{Performance Optimization}
+
+\subsection{Frontend Optimization}
+
+\subsubsection{Code Splitting}
+\begin{itemize}
+    \item \textbf{Route-based Splitting}: Lazy loading of page components
+    \item \textbf{Component Splitting}: Dynamic imports for large components
+    \item \textbf{Bundle Analysis}: Regular analysis of bundle sizes
+    \item \textbf{Tree Shaking}: Elimination of unused code
+\end{itemize}
+
+\subsubsection{Caching Strategies}
+\begin{itemize}
+    \item \textbf{Browser Caching}: Static asset caching with versioning
+    \item \textbf{API Response Caching}: Cache frequently accessed data
+    \item \textbf{Image Optimization}: Compressed and optimized images
+    \item \textbf{Service Workers}: Offline functionality and caching
+\end{itemize}
+
+\subsection{Backend Optimization}
+
+\subsubsection{Database Performance}
+\begin{itemize}
+    \item \textbf{Query Optimization}: Efficient SQL queries with proper indexing
+    \item \textbf{Connection Pooling}: Database connection management
+    \item \textbf{Caching Layer}: Redis for session and data caching
+    \item \textbf{Pagination}: Efficient data pagination for large datasets
+\end{itemize}
+
+\subsubsection{API Performance}
+\begin{itemize}
+    \item \textbf{Response Compression}: GZIP compression for API responses
+    \item \textbf{Rate Limiting}: Protection against API abuse
+    \item \textbf{Async Processing}: Non-blocking operations for file uploads
+    \item \textbf{Error Handling}: Graceful error handling and recovery
+\end{itemize}
+
+\section{Future Enhancements}
+
+\subsection{Planned Features}
+
+\subsubsection{Advanced Security}
+\begin{itemize}
+    \item \textbf{Multi-factor Authentication}: Enhanced security with 2FA
+    \item \textbf{File Encryption}: Client-side encryption before upload
+    \item \textbf{Digital Signatures}: Advanced cryptographic signatures
+    \item \textbf{Zero-knowledge Proofs}: Privacy-preserving verification
+\end{itemize}
+
+\subsubsection{Scalability Improvements}
+\begin{itemize}
+    \item \textbf{Microservices Architecture}: Service decomposition
+    \item \textbf{Load Balancing}: Horizontal scaling capabilities
+    \item \textbf{CDN Integration}: Global content delivery
+    \item \textbf{Database Sharding}: Horizontal database scaling
+\end{itemize}
+
+\subsubsection{User Experience}
+\begin{itemize}
+    \item \textbf{Mobile Application}: Native mobile apps for iOS/Android
+    \item \textbf{Bulk Operations}: Mass file upload and verification
+    \item \textbf{Advanced Search}: Full-text search and filtering
+    \item \textbf{Collaboration Features}: File sharing and team management
+\end{itemize}
+
+\subsection{Technology Roadmap}
+
+\subsubsection{Short-term (3-6 months)}
+\begin{itemize}
+    \item Enhanced mobile responsiveness
+    \item Advanced analytics dashboard
+    \item Batch file processing
+    \item Performance optimizations
+\end{itemize}
+
+\subsubsection{Medium-term (6-12 months)}
+\begin{itemize}
+    \item Multi-blockchain support
+    \item Advanced encryption features
+    \item API rate limiting improvements
+    \item Comprehensive audit logging
+\end{itemize}
+
+\subsubsection{Long-term (12+ months)}
+\begin{itemize}
+    \item Decentralized governance
+    \item Layer 2 scaling solutions
+    \item Enterprise features
+    \item Regulatory compliance tools
+\end{itemize}
+
+\section{Conclusion}
+
+\subsection{Project Summary}
+The Blockchain File Security System represents a comprehensive solution for secure file management in the digital age. By combining blockchain technology with modern web development practices, the system provides:
+
+\begin{itemize}
+    \item \textbf{Immutable File Records}: Blockchain-based proof of authenticity
+    \item \textbf{Distributed Storage}: IPFS integration for decentralized file storage
+    \item \textbf{User-Friendly Interface}: Professional React-based frontend
+    \item \textbf{Scalable Architecture}: Microservices design for growth
+    \item \textbf{Enterprise Security}: Multiple layers of security protection
+\end{itemize}
+
+\subsection{Technical Achievements}
+The project demonstrates several technical accomplishments:
+
+\begin{enumerate}
+    \item \textbf{Full-stack Integration}: Seamless integration between frontend, backend, and blockchain
+    \item \textbf{Security-first Design}: Comprehensive security measures at all levels
+    \item \textbf{Production Readiness}: Deployment-ready configuration and monitoring
+    \item \textbf{Modern Development Practices}: Clean code, testing, and documentation
+    \item \textbf{Performance Optimization}: Efficient algorithms and caching strategies
+\end{enumerate}
+
+\subsection{Business Value}
+The system provides significant business value through:
+
+\begin{itemize}
+    \item \textbf{Trust and Transparency}: Immutable records build user trust
+    \item \textbf{Compliance Support}: Audit trails for regulatory requirements
+    \item \textbf{Reduced Liability}: Cryptographic proof of file integrity
+    \item \textbf{Operational Efficiency}: Automated verification processes
+    \item \textbf{Competitive Advantage}: Cutting-edge technology implementation
+\end{itemize}
+
+\begin{successbox}
+\textbf{Success Metrics:} The system successfully demonstrates enterprise-grade blockchain file management with production-ready features, comprehensive security, and excellent user experience.
+\end{successbox}
+
+\subsection{Recommendations}
+For organizations considering implementation:
+
+\begin{enumerate}
+    \item \textbf{Start with Pilot Program}: Begin with a limited user group
+    \item \textbf{Invest in Training}: Ensure users understand blockchain concepts
+    \item \textbf{Plan for Scaling}: Design infrastructure for growth
+    \item \textbf{Regular Security Audits}: Maintain security posture
+    \item \textbf{Community Engagement}: Build user community and feedback loops
+\end{enumerate}
+
+The Blockchain File Security System sets a new standard for secure file management, combining innovative technology with practical usability to create a solution that meets real-world enterprise needs.
+
+\newpage
+
+\section{Appendices}
+
+\subsection{Appendix A: Installation Guide}
+
+\subsubsection{System Requirements}
+\begin{itemize}
+    \item \textbf{Operating System}: Windows 10+, macOS 10.15+, or Linux Ubuntu 18.04+
+    \item \textbf{Node.js}: Version 16.0 or higher
+    \item \textbf{Python}: Version 3.8 or higher
+    \item \textbf{Git}: Latest version
+    \item \textbf{Web Browser}: Chrome, Firefox, Safari, or Edge (latest versions)
+    \item \textbf{MetaMask Extension}: Latest version
+\end{itemize}
+
+\subsubsection{Step-by-step Installation}
+
+\begin{enumerate}
+    \item \textbf{Clone Repository}
+    \begin{lstlisting}[language=bash]
+git clone https://github.com/your-repo/blockchain-file-security
+cd blockchain-file-security
+    \end{lstlisting}
+
+    \item \textbf{Frontend Setup}
+    \begin{lstlisting}[language=bash]
+cd frontend
+npm install
+cp .env.example .env
+# Edit .env with your configuration
+npm start
+    \end{lstlisting}
+
+    \item \textbf{Backend Setup}
+    \begin{lstlisting}[language=bash]
+cd backend
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env with your configuration
+python app_dev.py
+    \end{lstlisting}
+
+    \item \textbf{Blockchain Setup}
+    \begin{lstlisting}[language=bash]
+cd blockchain
+npm install
+npx hardhat compile
+npx hardhat node
+# In another terminal:
+npx hardhat run scripts/deploy.js --network localhost
+    \end{lstlisting}
+\end{enumerate}
+
+\subsection{Appendix B: Configuration Reference}
+
+\subsubsection{Environment Variables}
+
+\textbf{Frontend (.env):}
+\begin{lstlisting}
+REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_CONTRACT_ADDRESS=0x742d35Cc6634C0532925a3b8D404d77443Ebe1d5
+REACT_APP_IPFS_URL=http://localhost:5001
+REACT_APP_NETWORK_ID=1337
+\end{lstlisting}
+
+\textbf{Backend (.env):}
+\begin{lstlisting}
+DATABASE_URL=sqlite:///development.db
+JWT_SECRET_KEY=your-secret-key-change-in-production
+IPFS_URL=http://localhost:5001
+CONTRACT_ADDRESS=0x742d35Cc6634C0532925a3b8D404d77443Ebe1d5
+NETWORK_URL=http://localhost:8545
+\end{lstlisting}
+
+\subsection{Appendix C: API Reference}
+
+Complete API documentation with request/response examples for all endpoints.
+
+\subsection{Appendix D: Smart Contract ABI}
+
+Complete Application Binary Interface (ABI) for the FileRegistry smart contract.
+
+\subsection{Appendix E: Testing Guide}
+
+Comprehensive testing procedures including unit tests, integration tests, and end-to-end testing scenarios.
+
+\end{document}

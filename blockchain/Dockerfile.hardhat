@@ -1,0 +1,32 @@
+# Dockerfile for Hardhat Development Environment
+FROM node:18-alpine
+
+# Install required tools
+RUN apk add --no-cache \
+    git \
+    python3 \
+    make \
+    g++ \
+    curl
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Expose Hardhat node port
+EXPOSE 8545
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8545 || exit 1
+
+# Default command
+CMD ["npx", "hardhat", "node", "--hostname", "0.0.0.0"]

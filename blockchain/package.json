@@ -1,0 +1,38 @@
+{
+  "name": "blockchain-file-security-contracts",
+  "version": "1.0.0",
+  "description": "Smart contracts for blockchain file security system",
+  "main": "hardhat.config.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.js",
+    "deploy:testnet": "hardhat run scripts/deploy.js --network sepolia",
+    "deploy:mainnet": "hardhat run scripts/deploy.js --network mainnet",
+    "verify": "hardhat verify",
+    "node": "hardhat node",
+    "clean": "hardhat clean"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@nomiclabs/hardhat-etherscan": "^3.1.7",
+    "hardhat": "^2.19.4",
+    "ethers": "^6.8.1",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.1",
+    "dotenv": "^16.3.1"
+  },
+  "keywords": [
+    "blockchain",
+    "smart-contracts",
+    "file-security",
+    "ethereum",
+    "solidity"
+  ],
+  "author": "Blockchain File Security Team",
+  "license": "MIT"
+}
