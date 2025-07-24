@@ -162,3 +162,14 @@ secrets/
 # Contract Addresses (may be sensitive depending on deployment)
 contract-addresses.json
 deployed-contracts.json
+
+# Documentation Files (Exclude LaTeX and specific guides)
+documentation/
+*.tex
+*.pdf
+
+# Deployment Guides and Plans
+railway-deployment-guide.md
+vercel-modification-plan.md
+*deployment-guide.md
+*-plan.md
